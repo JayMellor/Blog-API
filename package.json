@@ -1,0 +1,19 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "A Blog API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JayMellor/Blog-API.git"
+  },
+  "author": "Jay Mellor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JayMellor/Blog-API/issues"
+  },
+  "homepage": "https://github.com/JayMellor/Blog-API#readme"
+}
