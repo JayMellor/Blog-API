@@ -2,8 +2,9 @@
   "name": "blog-api",
   "version": "1.0.0",
   "description": "A Blog API",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,28 @@
   "bugs": {
     "url": "https://github.com/JayMellor/Blog-API/issues"
   },
-  "homepage": "https://github.com/JayMellor/Blog-API#readme"
+  "homepage": "https://github.com/JayMellor/Blog-API#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "http-status": "^1.3.2",
+    "mongoose": "5.4.22"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "2500",
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 4080
+    }
+  },
+  "devDependencies": {
+    "mocha": "^6.1.4",
+    "should": "^13.2.3",
+    "sinon": "^7.3.2"
+  }
 }
