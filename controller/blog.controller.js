@@ -7,24 +7,24 @@ const httpStatus = require('http-status');
 const addBlog = (request, response) => {
 
     if (!request.body.title || request.body.title === '') {
-        return response.status(httpStatus.BAD_REQUEST)
-            .send(new Response(false, 'Title required'));
+        response.status(httpStatus.BAD_REQUEST);
+        return response.send(new Response(false, 'Title required'));
     }
     if (!request.body.author || request.body.author === '') {
-        return response.status(httpStatus.BAD_REQUEST)
-            .send(new Response(false, 'Author required'));
+        response.status(httpStatus.BAD_REQUEST);
+        return response.send(new Response(false, 'Author required'));
     }
     if (!request.body.date) {
-        return response.status(httpStatus.BAD_REQUEST)
-            .send(new Response(false, 'Date required'));
+        response.status(httpStatus.BAD_REQUEST);
+        return response.send(new Response(false, 'Date required'));
     }
     if (!request.body.summary || request.body.summary === '') {
-        return response.status(httpStatus.BAD_REQUEST)
-            .send(new Response(false, 'Summary required'));
+        response.status(httpStatus.BAD_REQUEST);
+        return response.send(new Response(false, 'Summary required'));
     }
     if (!request.body.content || request.body.content === '') {
-        return response.status(httpStatus.BAD_REQUEST)
-            .send(new Response(false, 'Content required'));
+        response.status(httpStatus.BAD_REQUEST);
+        return response.send(new Response(false, 'Content required'));
     }
 
     const blog = new Blog(request.body);
@@ -97,9 +97,6 @@ const updateblog = (request, response) => {
     blog.description = request.body.description;
     blog.price = request.body.price;
 
-    if (request.body.imageURL)
-        blog.imageURL = request.body.imageURL;
-
     return request.blog.save((error) => {
         if (error) {
             return response.send(error);
@@ -118,4 +115,4 @@ const deleteblog = (request, response) => {
     })
 };
 
-module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateblog, deleteblog };
+module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog, deleteBlog };
