@@ -90,12 +90,14 @@ const getBlog = (request, response) => {
 
 };
 
-const updateblog = (request, response) => {
+const updateBlog = (request, response) => {
 
     const { blog } = request;
-    blog.partNumber = request.body.partNumber;
-    blog.description = request.body.description;
-    blog.price = request.body.price;
+    blog.title = request.body.title;
+    blog.author = request.body.author;
+    blog.date = request.body.date;
+    blog.summary = request.body.summary;
+    blog.content = request.body.content;
 
     return request.blog.save((error) => {
         if (error) {
@@ -115,4 +117,4 @@ const deleteblog = (request, response) => {
     })
 };
 
-module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog, deleteBlog };
+module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog };
