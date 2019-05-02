@@ -3,6 +3,7 @@
 const Blog = require('../models/blog.model');
 const Response = require('../models/response.model');
 const httpStatus = require('http-status');
+const UserService = require('../common/user.service');
 
 const addBlog = (request, response) => {
 
@@ -10,7 +11,7 @@ const addBlog = (request, response) => {
         response.status(httpStatus.BAD_REQUEST);
         return response.send(new Response(false, 'Title required'));
     }
-    if (!request.body.author || request.body.author === '') {
+    if (!request.body.authorId || request.body.authorId === '') {
         response.status(httpStatus.BAD_REQUEST);
         return response.send(new Response(false, 'Author required'));
     }
@@ -45,20 +46,52 @@ const addBlog = (request, response) => {
  * @param {Object} response 
  */
 const getBlogs = (request, response) => {
+
     Blog.find({}, '-content', (error, blogs) => {
 
         if (error) {
             return response.send(error);
         }
 
-        const blogsWithLinks = blogs.map(blog => {
-            const newBlog = blog.toJSON();
-            newBlog.links = {};
-            newBlog.links.self = `http://${request.headers.host}/api/blogs/${blog._id}`;
-            return newBlog;
+        const blogPromises = blogs.map(async blog => {
+
+            const promiseResponse = await UserService.getUser(blog.authorId);
+
+            return promiseResponse;
+
         });
 
-        return response.json(blogsWithLinks);
+        const suppressRejection = (promise) => {
+            if (promise.catch) {
+                return promise.catch(error => null);
+            }
+            return promise;
+        }
+
+        Promise.all(blogPromises.map(suppressRejection))
+            .then(promises => {
+                blogs = promises.map((promise, index) => {
+
+                    if (!promise) {
+                        return blogs[index];
+                    }
+
+                    const newBlog = blogs[index].toJSON();
+                    newBlog.author = JSON.parse(promise);
+
+                    newBlog.links = {};
+                    newBlog.links.self = `http://${request.headers.host}/api/blogs/${newBlog._id}`;
+
+                    return newBlog;
+                });
+
+                return response.json(blogs);
+            })
+            .catch(error => {
+                console.error(error);
+                return response.send('error handling request');
+            });
+
     });
 };
 
@@ -86,7 +119,20 @@ const findBlogById = (request, response, next) => {
 };
 
 const getBlog = (request, response) => {
-    return response.status(httpStatus.OK).json(request.blog);
+
+    const blog = request.blog;
+    const blogWithUser = blog.toJSON();
+
+    UserService.getUser(blog.authorId)
+        .then(user => {
+            blogWithUser.author = JSON.parse(user);
+        })
+        .catch(error => {
+            console.error(error);
+        })
+        .finally(() => {
+            return response.json(blogWithUser);
+        })
 
 };
 
@@ -94,7 +140,7 @@ const updateBlog = (request, response) => {
 
     const { blog } = request;
     blog.title = request.body.title;
-    blog.author = request.body.author;
+    blog.authorId = request.body.authorId;
     blog.date = request.body.date;
     blog.summary = request.body.summary;
     blog.content = request.body.content;
