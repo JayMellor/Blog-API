@@ -53,7 +53,7 @@ const getBlogs = (request, response) => {
             return response.send(error);
         }
 
-        const blogPromises = blogs.map(async blog => {
+        const userPromises = blogs.map(async blog => {
 
             const promiseResponse = await UserService.getUser(blog.authorId);
 
@@ -68,7 +68,7 @@ const getBlogs = (request, response) => {
             return promise;
         }
 
-        Promise.all(blogPromises.map(suppressRejection))
+        Promise.all(userPromises.map(suppressRejection))
             .then(promises => {
                 blogs = promises.map((promise, index) => {
 
@@ -128,7 +128,7 @@ const getBlog = (request, response) => {
             blogWithUser.author = JSON.parse(user);
         })
         .catch(error => {
-            console.error(error);
+            console.error(error.body);
         })
         .finally(() => {
             return response.json(blogWithUser);
@@ -154,7 +154,7 @@ const updateBlog = (request, response) => {
 
 };
 
-const deleteblog = (request, response) => {
+const deleteBlog = (request, response) => {
     request.blog.remove((error) => {
         if (error) {
             return response.send(error);
@@ -163,4 +163,4 @@ const deleteblog = (request, response) => {
     })
 };
 
-module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog };
+module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog, deleteBlog };

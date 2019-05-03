@@ -28,7 +28,7 @@ module.exports = () => {
     blogRouter.route('/blogs/:blogId')
         .get(controller.getBlog)
         .put(controller.updateBlog)
-    //     .delete(controller.deleteBlog);
+        .delete(controller.deleteBlog);
 
     blogRouter.options("*", cors(options));
 
