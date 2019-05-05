@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const blogRouter = require('./router/blog.router')();
+const commentRouter = require('./router/comment.router')();
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -17,7 +18,8 @@ app.get('/', (request, response) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/api', blogRouter)
+app.use('/api/blogs', blogRouter);
+app.use('/api/comments', commentRouter);
 
 app.server = app.listen(port, () => {
     console.log(`Running on port ${port}`);

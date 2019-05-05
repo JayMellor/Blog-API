@@ -4,6 +4,7 @@ const Blog = require('../models/blog.model');
 const Response = require('../models/response.model');
 const httpStatus = require('http-status');
 const UserService = require('../common/user.service');
+const CommentService = require('../common/comment.service');
 
 const addBlog = (request, response) => {
 
@@ -13,7 +14,7 @@ const addBlog = (request, response) => {
     }
     if (!request.body.authorId || request.body.authorId === '') {
         response.status(httpStatus.BAD_REQUEST);
-        return response.send(new Response(false, 'Author required'));
+        return response.send(new Response(false, 'Author ID required'));
     }
     if (!request.body.date) {
         response.status(httpStatus.BAD_REQUEST);
@@ -121,18 +122,28 @@ const findBlogById = (request, response, next) => {
 const getBlog = (request, response) => {
 
     const blog = request.blog;
-    const blogWithUser = blog.toJSON();
+    const modifiedBlog = blog.toJSON();
 
-    UserService.getUser(blog.authorId)
-        .then(user => {
-            blogWithUser.author = JSON.parse(user);
-        })
+    userPromise = UserService.getUser(blog.authorId);
+
+    userPromise.then(user => {
+        modifiedBlog.author = JSON.parse(user);
+    })
+        .catch(error => {
+            console.error(error.body);
+        });
+
+    commentPromise = CommentService.getCommentsForBlog(blog._id);
+    commentPromise.then(comments => {
+        modifiedBlog.comments = JSON.parse(comments);
+    })
         .catch(error => {
             console.error(error.body);
         })
-        .finally(() => {
-            return response.json(blogWithUser);
-        })
+
+    Promise.all([userPromise, commentPromise]).then( () => {
+        return response.json(modifiedBlog);
+    }) // todo catch?
 
 };
 

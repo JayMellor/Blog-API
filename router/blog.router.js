@@ -19,13 +19,13 @@ module.exports = () => {
     //use cors middleware
     blogRouter.use(cors(options));
 
-    blogRouter.route('/blogs')
+    blogRouter.route('/')
         .post(controller.addBlog)
         .get(controller.getBlogs);
 
-    blogRouter.use('/blogs/:blogId', controller.findBlogById);
+    blogRouter.use('/:blogId', controller.findBlogById);
 
-    blogRouter.route('/blogs/:blogId')
+    blogRouter.route('/:blogId')
         .get(controller.getBlog)
         .put(controller.updateBlog)
         .delete(controller.deleteBlog);
