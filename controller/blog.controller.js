@@ -166,12 +166,15 @@ const updateBlog = (request, response) => {
 };
 
 const deleteBlog = (request, response) => {
-    request.blog.remove((error) => {
-        if (error) {
-            return response.send(error);
-        }
-        return response.sendStatus(httpStatus.NO_CONTENT);
-    })
+
+    const { blog } = request;
+
+    const commentPromise = CommentService.deleteCommentsForBlog(blog._id);
+    const blogPromise = blog.remove();
+
+    Promise.all([commentPromise,blogPromise])
+    .then( () => response.sendStatus(httpStatus.NO_CONTENT))
+    .catch( error => response.send(error));
 };
 
 module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog, deleteBlog };

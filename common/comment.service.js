@@ -9,5 +9,6 @@ const options = {
 };
 
 const getCommentsForBlog = (blogId) => request.get(`${COMMENT_API_PATH}/api/comments/byblog/${blogId}`, options);
+const deleteCommentsForBlog = (blogId) => request.delete(`${COMMENT_API_PATH}/api/comments/byblog/${blogId}`, options);
 
-module.exports = { getCommentsForBlog };
+module.exports = { getCommentsForBlog, deleteCommentsForBlog };

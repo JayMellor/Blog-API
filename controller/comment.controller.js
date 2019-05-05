@@ -29,8 +29,6 @@ const addComment = (request, response) => {
 
 const getComments = (request, response) => {
 
-    console.log('here')
-
     Comment.find((error, comments) => {
 
         if (error) {
@@ -91,4 +89,41 @@ const getCommentsForBlog = (request, response) => {
     })
 };
 
-module.exports = { addComment, getComments, getCommentsForBlog };
+const deleteCommentsForBlog = (request, response) => {
+
+    Comment.deleteMany({ blogId: request.params.blogId }, error => {
+        if (error) {
+            return response.error(error);
+        }
+
+        return response.sendStatus(httpStatus.NO_CONTENT);
+    })
+
+}
+
+const findCommentById = (request, response, next) => {
+    Comment.findById(request.params.commentId, (error, comment) => {
+        if (error) {
+            return response.send(error);
+        }
+        if (comment) {
+            request.comment = comment;
+            return next();
+        }
+        else {
+            return response.sendStatus(httpStatus.NOT_FOUND);
+        }
+    });
+}
+
+const deleteComment = (request, response) => {
+    request.comment.remove(error => {
+        if (error) {
+            return response.error(error);
+        }
+
+        return response.sendStatus(httpStatus.NO_CONTENT);
+    });
+};
+
+module.exports = { addComment, getComments, getCommentsForBlog, deleteCommentsForBlog, findCommentById, deleteComment };

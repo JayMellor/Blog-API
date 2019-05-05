@@ -24,14 +24,15 @@ module.exports = () => {
         .get(controller.getComments);
 
     commentRouter.route('/byblog/:blogId')
-        .get(controller.getCommentsForBlog);
+        .get(controller.getCommentsForBlog)
+        .delete(controller.deleteCommentsForBlog);
 
-    // commentRouter.use('/comments/:commentId', controller.findBlogById);
+    commentRouter.use('/:commentId', controller.findCommentById);
 
-    // commentRouter.route('/comments/:commentId');
-    // .get(controller.getBlog)
-    // .put(controller.updateBlog)
-    // .delete(controller.deleteBlog);
+    commentRouter.route('/:commentId')
+        // .get(controller.getBlog)
+        // .put(controller.updateBlog)
+        .delete(controller.deleteComment);
 
     commentRouter.options("*", cors(options));
 
