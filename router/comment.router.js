@@ -31,7 +31,7 @@ module.exports = () => {
 
     commentRouter.route('/:commentId')
         // .get(controller.getBlog)
-        // .put(controller.updateBlog)
+        .put(controller.updateComment)
         .delete(controller.deleteComment);
 
     commentRouter.options("*", cors(options));

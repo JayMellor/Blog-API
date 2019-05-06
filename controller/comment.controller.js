@@ -114,7 +114,21 @@ const findCommentById = (request, response, next) => {
             return response.sendStatus(httpStatus.NOT_FOUND);
         }
     });
-}
+};
+
+const updateComment = (request, response) => {
+
+    const { comment } = request;
+    comment.body = request.body.body;
+
+    return comment.save((error) => {
+        if (error) {
+            return response.send(error);
+        }
+        return response.json(comment);
+    });
+
+};
 
 const deleteComment = (request, response) => {
     request.comment.remove(error => {
@@ -126,4 +140,4 @@ const deleteComment = (request, response) => {
     });
 };
 
-module.exports = { addComment, getComments, getCommentsForBlog, deleteCommentsForBlog, findCommentById, deleteComment };
+module.exports = { addComment, getComments, getCommentsForBlog, deleteCommentsForBlog, findCommentById, updateComment, deleteComment };
