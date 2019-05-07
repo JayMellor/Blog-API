@@ -48,7 +48,13 @@ const addBlog = (request, response) => {
  */
 const getBlogs = (request, response) => {
 
-    Blog.find({}, '-content', (error, blogs) => {
+    let query = {};
+
+    if (request.query) {
+        query = request.query;
+    }
+
+    Blog.find(query, '-content', (error, blogs) => {
 
         if (error) {
             return response.send(error);
@@ -141,7 +147,7 @@ const getBlog = (request, response) => {
             console.error(error.body);
         })
 
-    Promise.all([userPromise, commentPromise]).then( () => {
+    Promise.all([userPromise, commentPromise]).then(() => {
         return response.json(modifiedBlog);
     }) // todo catch?
 
@@ -172,9 +178,9 @@ const deleteBlog = (request, response) => {
     const commentPromise = CommentService.deleteCommentsForBlog(blog._id);
     const blogPromise = blog.remove();
 
-    Promise.all([commentPromise,blogPromise])
-    .then( () => response.sendStatus(httpStatus.NO_CONTENT))
-    .catch( error => response.send(error));
+    Promise.all([commentPromise, blogPromise])
+        .then(() => response.sendStatus(httpStatus.NO_CONTENT))
+        .catch(error => response.send(error));
 };
 
 module.exports = { addBlog, getBlogs, findBlogById, getBlog, updateBlog, deleteBlog };
