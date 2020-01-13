@@ -70,7 +70,7 @@ const getBlogs = (request, response) => {
 
         const suppressRejection = (promise) => {
             if (promise.catch) {
-                return promise.catch(error => null);
+                return promise.catch(_error => null);
             }
             return promise;
         }
@@ -131,7 +131,6 @@ const getBlog = (request, response) => {
     const modifiedBlog = blog.toJSON();
 
     userPromise = UserService.getUser(blog.authorId);
-
     userPromise.then(user => {
         modifiedBlog.author = JSON.parse(user);
     })
@@ -149,7 +148,7 @@ const getBlog = (request, response) => {
 
     Promise.all([userPromise, commentPromise]).then(() => {
         return response.json(modifiedBlog);
-    }) // todo catch?
+    }).catch(() => response.json(blog))
 
 };
 
